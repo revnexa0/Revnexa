@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog — Revnexa | App Growth Insights & Reputation Tips</title>
+  <meta name="description" content="Expert insights on app reputation management, user feedback strategies, and growth tips. Stay updated with the latest trends in app marketing.">
+  <meta name="keywords" content="app growth tips, reputation management blog, user feedback insights, app marketing, mobile app reviews">
+  <link rel="canonical" href="https://revnexa.com/blog.html">
+  <meta property="og:title" content="Blog — Revnexa">
+  <meta property="og:description" content="Expert insights on app reputation management and growth strategies.">
+  <meta property="og:url" content="https://revnexa.com/blog.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="loader" id="loader"><div class="loader-logo">Revnexa</div><div class="loader-bar"></div></div>
+<header class="header" id="header">
+  <div class="container">
+    <a href="index.html" class="logo"><img src="assets/logo.png" alt="Revnexa" class="logo-img" onerror="this.style.display='none'"><span class="logo-text">Rev<span>nexa</span></span></a>
+    <nav class="nav" id="nav">
+      <a href="index.html" class="nav-link">Home</a><a href="services.html" class="nav-link">Services</a><a href="about.html" class="nav-link">About</a><a href="portfolio.html" class="nav-link">Portfolio</a><a href="blog.html" class="nav-link active">Blog</a><a href="pricing.html" class="nav-link">Pricing</a><a href="contact.html" class="nav-link">Contact</a>
+    </nav>
+    <div class="header-actions"><a href="contact.html" class="btn btn-primary btn-sm">Get Started</a><button class="hamburger" id="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button></div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="hero-bg"><div class="shape shape-1"></div><div class="shape shape-2"></div></div>
+  <div class="container">
+    <h1>Our <span class="gradient-text">Blog</span></h1>
+    <p>Expert insights, proven strategies, and the latest trends in app reputation management and growth.</p>
+    <div class="breadcrumb"><a href="index.html">Home</a> <span>/</span> <span>Blog</span></div>
+  </div>
+</section>
+
+<!-- Blog Grid — populated by JS from Firebase + seed data -->
+<section class="section">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:48px">
+      <p class="section-label reveal">Latest Articles</p>
+      <h2 class="section-title reveal">Insights & <span class="gradient-text">Resources</span></h2>
+    </div>
+    <div class="grid grid-3" id="blog-grid">
+      <!-- Blog posts will be loaded here by script.js -->
+    </div>
+    <div id="blog-loading" class="text-center" style="padding:60px 0;color:var(--dark-500)">Loading articles...</div>
+  </div>
+</section>
+
+<!-- Single Blog Post View (hidden by default, shown when viewing a post) -->
+<section class="section" id="blog-post-view" style="display:none">
+  <div class="blog-post-content" id="blog-post-content">
+    <!-- Dynamic content from JS -->
+  </div>
+</section>
+
+<!-- Newsletter -->
+<section class="section section-dark" style="padding:60px 0">
+  <div class="container text-center">
+    <h2 class="reveal" style="font-size:1.6rem">📬 Subscribe to Our Newsletter</h2>
+    <p class="reveal" style="color:var(--dark-400);max-width:500px;margin:12px auto 24px">Get weekly insights on app growth, reputation management tips, and industry news delivered to your inbox.</p>
+    <form class="newsletter-form reveal" id="newsletter-form" style="margin:0 auto">
+      <input type="email" placeholder="Enter your email" required>
+      <button type="submit" class="btn btn-primary">Subscribe</button>
+    </form>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <h2 class="reveal">Need Expert Help With Your App?</h2>
+    <p class="reveal">Our team is ready to help you build a winning reputation strategy.</p>
+    <div class="reveal" style="position:relative;z-index:1"><a href="contact.html" class="btn btn-white btn-lg">Get Free Consultation</a></div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand"><span class="logo-text" style="font-family:var(--font-heading);font-size:1.5rem;font-weight:800">Rev<span class="gradient-text">nexa</span></span><p>Empowering businesses with authentic user feedback and data-driven growth solutions.</p><div class="footer-social"><a href="#">𝕏</a><a href="#">in</a><a href="#">f</a><a href="#">📷</a></div></div>
+      <div><h4>Quick Links</h4><ul class="footer-links"><li><a href="index.html">Home</a></li><li><a href="services.html">Services</a></li><li><a href="about.html">About</a></li><li><a href="portfolio.html">Portfolio</a></li><li><a href="blog.html">Blog</a></li></ul></div>
+      <div><h4>Services</h4><ul class="footer-links"><li><a href="services.html">User Feedback</a></li><li><a href="services.html">App Testing</a></li><li><a href="services.html">Reputation Growth</a></li><li><a href="services.html">Review Management</a></li></ul></div>
+      <div><h4>Contact</h4><ul class="footer-links"><li><a href="contact.html">Contact Us</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="faq.html">FAQ</a></li><li><a href="privacy.html">Privacy Policy</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><p>&copy; 2024 Revnexa. All rights reserved.</p></div>
+  </div>
+</footer>
+<a href="https://wa.me/1234567890?text=I%20visited%20your%20website%20and%20I'm%20interested%20in%20your%20service." class="float-whatsapp" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
+<button class="back-to-top" id="back-to-top" aria-label="Back to top">↑</button>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

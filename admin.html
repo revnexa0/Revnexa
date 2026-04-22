@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel — Revnexa</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="admin-layout">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <a href="index.html" class="logo-text" style="font-family:var(--font-heading);font-weight:800;font-size:1.3rem">Rev<span class="gradient-text">nexa</span></a>
+    <p style="font-size:0.78rem;color:var(--dark-600);margin-bottom:32px">Admin Panel</p>
+    <nav class="admin-nav">
+      <a href="#" class="active" data-panel="dashboard">📊 Dashboard</a>
+      <a href="#" data-panel="messages">📩 Messages</a>
+      <a href="#" data-panel="blog">📝 Blog Posts</a>
+      <a href="#" data-panel="settings">⚙️ Settings</a>
+    </nav>
+    <div style="position:absolute;bottom:24px;left:24px;right:24px">
+      <a href="index.html" style="color:var(--dark-500);font-size:0.85rem;display:flex;align-items:center;gap:8px">← Back to Site</a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <!-- Dashboard Panel -->
+    <div id="panel-dashboard" class="admin-panel">
+      <div class="admin-header"><h1>Dashboard</h1><span style="color:var(--dark-500);font-size:0.9rem" id="admin-date"></span></div>
+      <div class="admin-stats">
+        <div class="admin-stat-card"><div class="label">Total Messages</div><div class="value" id="stat-messages">0</div></div>
+        <div class="admin-stat-card"><div class="label">Unread Messages</div><div class="value" id="stat-unread" style="color:var(--primary)">0</div></div>
+        <div class="admin-stat-card"><div class="label">Blog Posts</div><div class="value" id="stat-posts">0</div></div>
+        <div class="admin-stat-card"><div class="label">Subscribers</div><div class="value" id="stat-subs">0</div></div>
+      </div>
+      <div class="admin-card"><h2>Recent Messages</h2><div id="recent-messages">Loading...</div></div>
+    </div>
+
+    <!-- Messages Panel -->
+    <div id="panel-messages" class="admin-panel" style="display:none">
+      <div class="admin-header"><h1>Messages</h1><button class="admin-btn admin-btn-primary" onclick="loadMessages()">↻ Refresh</button></div>
+      <div class="admin-card"><table class="admin-table"><thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody id="messages-table"><tr><td colspan="7" style="text-align:center;padding:40px">Loading messages...</td></tr></tbody></table></div>
+    </div>
+
+    <!-- Reply Modal -->
+    <div class="modal-overlay" id="reply-modal">
+      <div class="modal">
+        <div class="modal-header"><h3>Reply to Message</h3><button class="modal-close" onclick="document.getElementById('reply-modal').classList.remove('active')">✕</button></div>
+        <div id="reply-original" style="background:var(--dark-50);padding:16px;border-radius:var(--radius);margin-bottom:16px;font-size:0.9rem"></div>
+        <div class="form-group"><label>Your Reply</label><textarea id="reply-text" class="form-control" rows="4" placeholder="Type your reply..."></textarea></div>
+        <button class="btn btn-primary" style="width:100%" onclick="sendReply()">Send Reply</button>
+      </div>
+    </div>
+
+    <!-- Blog Panel -->
+    <div id="panel-blog" class="admin-panel" style="display:none">
+      <div class="admin-header"><h1>Blog Posts</h1><button class="admin-btn admin-btn-primary" onclick="showBlogEditor()">+ New Post</button></div>
+      <div class="admin-card" id="blog-list-card"><table class="admin-table"><thead><tr><th>Title</th><th>Category</th><th>Date</th><th>Actions</th></tr></thead><tbody id="blog-table"><tr><td colspan="4" style="text-align:center;padding:40px">Loading posts...</td></tr></tbody></table></div>
+      <!-- Blog Editor -->
+      <div class="admin-card" id="blog-editor" style="display:none">
+        <h2 id="editor-title">New Blog Post</h2>
+        <form id="blog-form" class="admin-form">
+          <input type="hidden" id="blog-edit-id">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+            <div class="form-group" style="margin:0"><label>Title</label><input type="text" id="blog-title" class="form-control" required placeholder="Post title"></div>
+            <div class="form-group" style="margin:0"><label>Slug</label><input type="text" id="blog-slug" class="form-control" required placeholder="post-url-slug"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px">
+            <div class="form-group" style="margin:0"><label>Category</label><input type="text" id="blog-category" class="form-control" placeholder="App Growth"></div>
+            <div class="form-group" style="margin:0"><label>Author</label><input type="text" id="blog-author" class="form-control" value="Revnexa Team"></div>
+            <div class="form-group" style="margin:0"><label>Read Time</label><input type="text" id="blog-readtime" class="form-control" placeholder="5 min read"></div>
+          </div>
+          <div class="form-group"><label>Excerpt</label><textarea id="blog-excerpt" class="form-control" rows="2" placeholder="Short description for cards..." style="min-height:60px"></textarea></div>
+          <div class="form-group"><label>Meta Description (SEO)</label><input type="text" id="blog-meta" class="form-control" placeholder="SEO description (160 chars max)"></div>
+          <div class="form-group"><label>Content (HTML)</label><textarea id="blog-content" class="form-control" rows="12" placeholder="<h2>Heading</h2><p>Content...</p>"></textarea></div>
+          <div class="form-group"><label>Featured Image</label>
+            <div style="display:flex;gap:12px;align-items:start">
+              <input type="file" id="blog-image-file" accept="image/*" class="form-control" style="flex:1">
+              <button type="button" class="admin-btn admin-btn-primary" onclick="uploadImage()" style="padding:14px 20px">Upload</button>
+            </div>
+            <input type="text" id="blog-image-url" class="form-control" placeholder="Image URL (auto-filled after upload)" style="margin-top:8px">
+          </div>
+          <div style="display:flex;gap:12px">
+            <button type="submit" class="btn btn-primary">Save Post</button>
+            <button type="button" class="btn btn-outline-dark" onclick="hideBlogEditor()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Settings Panel -->
+    <div id="panel-settings" class="admin-panel" style="display:none">
+      <div class="admin-header"><h1>Settings</h1></div>
+      <div class="admin-card">
+        <h2>Contact Settings</h2>
+        <form id="settings-form">
+          <div class="form-group"><label>WhatsApp Number</label><input type="text" id="set-whatsapp" class="form-control" placeholder="+1234567890"></div>
+          <div class="form-group"><label>Telegram Username</label><input type="text" id="set-telegram" class="form-control" placeholder="@revnexa"></div>
+          <div class="form-group"><label>Auto Message (WhatsApp/Telegram)</label><input type="text" id="set-automsg" class="form-control" placeholder="I visited your website and I'm interested in your service."></div>
+          <div class="form-group"><label>Telegram Bot Token</label><input type="text" id="set-bot-token" class="form-control" placeholder="Bot token for notifications"></div>
+          <div class="form-group"><label>Telegram Chat ID</label><input type="text" id="set-chat-id" class="form-control" placeholder="Chat ID for notifications"></div>
+          <div class="form-group"><label>ImgBB API Key</label><input type="text" id="set-imgbb" class="form-control" placeholder="API key for image uploads"></div>
+          <button type="submit" class="btn btn-primary">Save Settings</button>
+          <div class="form-status" id="settings-status"></div>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script>
+// Firebase Init
+const firebaseConfig = {
+  apiKey: "AIzaSyA26CXX8KgaEAQAco7-CBl1UC1x7vhKe9g",
+  authDomain: "revnexa-e4f12.firebaseapp.com",
+  projectId: "revnexa-e4f12",
+  storageBucket: "revnexa-e4f12.firebasestorage.app",
+  messagingSenderId: "701095930338",
+  appId: "1:701095930338:web:a3708ff316481e956c71bb"
+};
+let db;
+try { firebase.initializeApp(firebaseConfig); db = firebase.firestore(); } catch(e) { console.warn(e); }
+
+const IMGBB_API_KEY = '8e423461bbd3d1e420b27789e4ffcd8b';
+
+// Date display
+document.getElementById('admin-date').textContent = new Date().toLocaleDateString('en-US', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+// Navigation
+document.querySelectorAll('.admin-nav a').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    document.querySelectorAll('.admin-nav a').forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+    document.querySelectorAll('.admin-panel').forEach(p => p.style.display = 'none');
+    document.getElementById('panel-' + link.dataset.panel).style.display = 'block';
+  });
+});
+
+// Load Dashboard
+async function loadDashboard() {
+  if (!db) return;
+  try {
+    const msgs = await db.collection('messages').get();
+    const unread = msgs.docs.filter(d => !d.data().read).length;
+    const posts = await db.collection('posts').get();
+    const subs = await db.collection('newsletter').get();
+
+    document.getElementById('stat-messages').textContent = msgs.size;
+    document.getElementById('stat-unread').textContent = unread;
+    document.getElementById('stat-posts').textContent = posts.size;
+    document.getElementById('stat-subs').textContent = subs.size;
+
+    // Recent messages
+    const recent = msgs.docs.sort((a,b) => (b.data().timestamp?.toMillis()||0) - (a.data().timestamp?.toMillis()||0)).slice(0,5);
+    const recentEl = document.getElementById('recent-messages');
+    if (recent.length === 0) { recentEl.innerHTML = '<p style="color:var(--dark-500);text-align:center;padding:20px">No messages yet.</p>'; return; }
+    recentEl.innerHTML = '<table class="admin-table"><thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Date</th></tr></thead><tbody>' +
+      recent.map(d => {const m=d.data(); return `<tr><td>${esc(m.name)}</td><td>${esc(m.email)}</td><td>${esc(m.subject||'—')}</td><td>${fmtDate(m.timestamp)}</td></tr>`;}).join('') +
+      '</tbody></table>';
+  } catch(e) { console.error(e); }
+}
+
+// Load Messages
+let currentReplyId = null;
+async function loadMessages() {
+  if (!db) { document.getElementById('messages-table').innerHTML='<tr><td colspan="7" style="text-align:center;padding:40px">Firebase not connected</td></tr>'; return; }
+  try {
+    const snap = await db.collection('messages').orderBy('timestamp','desc').get();
+    const tbody = document.getElementById('messages-table');
+    if (snap.empty) { tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:40px">No messages</td></tr>'; return; }
+    tbody.innerHTML = snap.docs.map(doc => {
+      const m = doc.data();
+      return `<tr>
+        <td><strong>${esc(m.name)}</strong></td>
+        <td>${esc(m.email)}</td>
+        <td>${esc(m.subject||'—')}</td>
+        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(m.message)}</td>
+        <td style="white-space:nowrap">${fmtDate(m.timestamp)}</td>
+        <td><span class="badge ${m.read?'badge-read':'badge-new'}">${m.read?'Read':'New'}</span></td>
+        <td style="white-space:nowrap">
+          <button class="admin-btn admin-btn-primary" onclick="openReply('${doc.id}','${esc(m.name)}','${esc(m.email)}','${esc(m.message).replace(/'/g,"\\'")}')">Reply</button>
+          <button class="admin-btn admin-btn-success" onclick="markRead('${doc.id}',this)">✓</button>
+          <button class="admin-btn admin-btn-danger" onclick="deleteMsg('${doc.id}')">✕</button>
+        </td>
+      </tr>`;
+    }).join('');
+  } catch(e) { console.error(e); }
+}
+
+function openReply(id, name, email, msg) {
+  currentReplyId = id;
+  document.getElementById('reply-original').innerHTML = `<strong>${name}</strong> &lt;${email}&gt;<br><br>${msg}`;
+  document.getElementById('reply-modal').classList.add('active');
+}
+
+async function sendReply() {
+  const text = document.getElementById('reply-text').value;
+  if (!text.trim()) return;
+  // In a real app, this would send an email. For now, log it and mark as read.
+  alert('Reply saved! In production, this would send an email to the user.');
+  if (currentReplyId && db) {
+    await db.collection('messages').doc(currentReplyId).update({ read: true, reply: text, replyDate: firebase.firestore.FieldValue.serverTimestamp() });
+  }
+  document.getElementById('reply-modal').classList.remove('active');
+  document.getElementById('reply-text').value = '';
+  loadMessages();
+}
+
+async function markRead(id, btn) {
+  if (!db) return;
+  await db.collection('messages').doc(id).update({ read: true });
+  btn.closest('tr').querySelector('.badge').className = 'badge badge-read';
+  btn.closest('tr').querySelector('.badge').textContent = 'Read';
+  loadDashboard();
+}
+
+async function deleteMsg(id) {
+  if (!confirm('Delete this message?')) return;
+  if (!db) return;
+  await db.collection('messages').doc(id).delete();
+  loadMessages(); loadDashboard();
+}
+
+// Blog Management
+async function loadBlogPosts() {
+  if (!db) { document.getElementById('blog-table').innerHTML='<tr><td colspan="4" style="text-align:center;padding:40px">Firebase not connected</td></tr>'; return; }
+  try {
+    const snap = await db.collection('posts').orderBy('date','desc').get();
+    const tbody = document.getElementById('blog-table');
+    if (snap.empty) { tbody.innerHTML='<tr><td colspan="4" style="text-align:center;padding:40px">No posts yet. Click "New Post" to create one.</td></tr>'; return; }
+    tbody.innerHTML = snap.docs.map(doc => {
+      const p = doc.data();
+      return `<tr>
+        <td><strong>${esc(p.title)}</strong></td>
+        <td>${esc(p.category||'—')}</td>
+        <td>${p.date||'—'}</td>
+        <td>
+          <button class="admin-btn admin-btn-primary" onclick="editPost('${doc.id}')">Edit</button>
+          <button class="admin-btn admin-btn-danger" onclick="deletePost('${doc.id}')">Delete</button>
+        </td>
+      </tr>`;
+    }).join('');
+  } catch(e) { console.error(e); }
+}
+
+function showBlogEditor(post) {
+  document.getElementById('blog-editor').style.display = 'block';
+  document.getElementById('editor-title').textContent = post ? 'Edit Post' : 'New Blog Post';
+  if (post) {
+    document.getElementById('blog-edit-id').value = post.id || '';
+    document.getElementById('blog-title').value = post.title || '';
+    document.getElementById('blog-slug').value = post.slug || '';
+    document.getElementById('blog-category').value = post.category || '';
+    document.getElementById('blog-author').value = post.author || 'Revnexa Team';
+    document.getElementById('blog-readtime').value = post.readTime || '';
+    document.getElementById('blog-excerpt').value = post.excerpt || '';
+    document.getElementById('blog-meta').value = post.metaDescription || '';
+    document.getElementById('blog-content').value = post.content || '';
+    document.getElementById('blog-image-url').value = post.image || '';
+  } else {
+    document.getElementById('blog-form').reset();
+    document.getElementById('blog-edit-id').value = '';
+    document.getElementById('blog-author').value = 'Revnexa Team';
+  }
+}
+
+function hideBlogEditor() { document.getElementById('blog-editor').style.display = 'none'; }
+
+async function editPost(id) {
+  if (!db) return;
+  const doc = await db.collection('posts').doc(id).get();
+  if (doc.exists) showBlogEditor({ id: doc.id, ...doc.data() });
+}
+
+async function deletePost(id) {
+  if (!confirm('Delete this post?')) return;
+  if (!db) return;
+  await db.collection('posts').doc(id).delete();
+  loadBlogPosts(); loadDashboard();
+}
+
+document.getElementById('blog-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!db) { alert('Firebase not connected'); return; }
+  const data = {
+    title: document.getElementById('blog-title').value,
+    slug: document.getElementById('blog-slug').value,
+    category: document.getElementById('blog-category').value,
+    author: document.getElementById('blog-author').value,
+    readTime: document.getElementById('blog-readtime').value,
+    excerpt: document.getElementById('blog-excerpt').value,
+    metaDescription: document.getElementById('blog-meta').value,
+    content: document.getElementById('blog-content').value,
+    image: document.getElementById('blog-image-url').value,
+    date: new Date().toISOString().split('T')[0],
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  const editId = document.getElementById('blog-edit-id').value;
+  try {
+    if (editId) { await db.collection('posts').doc(editId).update(data); }
+    else { await db.collection('posts').add(data); }
+    hideBlogEditor(); loadBlogPosts(); loadDashboard();
+    alert('Post saved successfully!');
+  } catch(e) { alert('Error saving: ' + e.message); }
+});
+
+// Auto-generate slug from title
+document.getElementById('blog-title').addEventListener('input', (e) => {
+  const slug = e.target.value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+  if (!document.getElementById('blog-edit-id').value) document.getElementById('blog-slug').value = slug;
+});
+
+// Image Upload via ImgBB
+async function uploadImage() {
+  const fileInput = document.getElementById('blog-image-file');
+  if (!fileInput.files[0]) { alert('Please select an image'); return; }
+  const formData = new FormData();
+  formData.append('image', fileInput.files[0]);
+  try {
+    const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('blog-image-url').value = data.data.url;
+      alert('Image uploaded successfully!');
+    } else { alert('Upload failed: ' + (data.error?.message || 'Unknown error')); }
+  } catch(e) { alert('Upload error: ' + e.message); }
+}
+
+// Settings
+async function loadSettings() {
+  if (!db) return;
+  try {
+    const doc = await db.collection('settings').doc('contact').get();
+    if (doc.exists) {
+      const s = doc.data();
+      document.getElementById('set-whatsapp').value = s.whatsapp || '';
+      document.getElementById('set-telegram').value = s.telegram || '';
+      document.getElementById('set-automsg').value = s.autoMessage || '';
+      document.getElementById('set-bot-token').value = s.botToken || '';
+      document.getElementById('set-chat-id').value = s.chatId || '';
+      document.getElementById('set-imgbb').value = s.imgbbKey || '';
+    }
+  } catch(e) { console.warn(e); }
+}
+
+document.getElementById('settings-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!db) { alert('Firebase not connected'); return; }
+  const status = document.getElementById('settings-status');
+  try {
+    await db.collection('settings').doc('contact').set({
+      whatsapp: document.getElementById('set-whatsapp').value,
+      telegram: document.getElementById('set-telegram').value,
+      autoMessage: document.getElementById('set-automsg').value,
+      botToken: document.getElementById('set-bot-token').value,
+      chatId: document.getElementById('set-chat-id').value,
+      imgbbKey: document.getElementById('set-imgbb').value,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    status.className = 'form-status success'; status.textContent = '✓ Settings saved!'; status.style.display = 'block';
+  } catch(e) { status.className = 'form-status error'; status.textContent = '✕ Error: ' + e.message; status.style.display = 'block'; }
+});
+
+// Helpers
+function esc(s) { if (!s) return ''; const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function fmtDate(ts) { if (!ts) return '—'; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}); }
+
+// Init
+loadDashboard(); loadMessages(); loadBlogPosts(); loadSettings();
+</script>
+</body>
+</html>
